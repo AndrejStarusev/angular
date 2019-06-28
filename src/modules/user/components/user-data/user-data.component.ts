@@ -14,8 +14,9 @@ export class UserDataComponent implements OnInit {
   constructor(@Optional() private parent: UserComponent) { }
 
   ngOnInit() {
-    console.log(this.parent);
-    this.parent.user = { ...this.user };
+    if (this.user) {
+      this.parent.user = { ...this.user };
+    }
   }
 
 }

@@ -1,0 +1,13 @@
+.first-name {
+    cursor: pointer;
+}
+
+.users-table {
+    width: 100%;
+}
+
+.users-table td,
+.users-table th {
+    padding-left: 10px;
+    padding-right: 10px;
+}

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { UserInterface } from '../../../../interfaces';
 import { ApiService } from '../../../core/services';
@@ -15,29 +15,37 @@ export class UsersListComponent implements OnInit {
   displayedColumns = ['first_name', 'last_name', 'email'];
   userList: any[] = [];
   pagesCount: number;
+  currentPage: number;
 
-  constructor(private activatedRoute: ActivatedRoute,
-              private router: Router) {
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private api: ApiService,
+  ) {
+    router.events.subscribe(e => {
+      if (e instanceof NavigationEnd) {
+        if (this.currentPage) {
+          this.api.fetchUsers(this.currentPage).subscribe(res => this.userList = res);
+        }
+      }
+    });
   }
 
   ngOnInit() {
-    this.activatedRoute.data.pipe(
-      map(data => data.users)
-    )
+    this.activatedRoute.data.pipe(map(data => data.users))
       .subscribe((users: UserInterface[]) => {
         this.userList = users;
       });
 
-    this.activatedRoute.data.pipe(
-      map(data => data.paginationInfo)
-    )
+    this.activatedRoute.data.pipe(map(data => data.paginationInfo))
       .subscribe(paginationInfo => {
         this.pagesCount = paginationInfo.total;
-      })
+      });
   }
 
   pageChanged(event: PageEvent): void {
-    let page: number = event.pageIndex + 1;
+    const page: number = event.pageIndex + 1;
+    this.currentPage = page;
     this.router.navigate(['./'], { queryParams: { page } });
   }
 

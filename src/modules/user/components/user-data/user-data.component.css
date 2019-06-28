@@ -1,0 +1,14 @@
+.user-card {
+    max-width: 268px;
+    overflow: hidden;
+}
+
+.user-card .mat-card-avatar {
+    display: none;
+}
+
+.user-card .avatar {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
